@@ -99,7 +99,22 @@ int send_request(int fd, char *hostname, char *port, char *path)
   // IMPLEMENT ME! //
   ///////////////////
 
-  return 0;
+  // Response length
+  int request_length = sprintf(
+      request, "Get /%s HTTP/1.1\n Host: %s:%s\nConnection:close\n\n",
+      path,
+      hostname,
+      port);
+
+  // Send it all using a send() system call
+  rv = send(fd, request, request_length, 0);
+
+  if (rv < 0)
+  {
+    perror("An error occured sending request tio server");
+  }
+
+  return rv;
 }
 
 int main(int argc, char *argv[])
