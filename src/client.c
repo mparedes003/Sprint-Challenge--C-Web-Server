@@ -58,16 +58,20 @@ urlinfo_t *parse_url(char *url)
 
   // Use strchr/strstr to find the first colon in the URL
   char *colon = strstr(hostname, ":");
+
   // Set the port pointer to 1 character after the spot returned by strchr.
   port = colon + 1;
+
   // Overwrite the colon with a '\0' so that we are just left with the hostname.
   *colon = '\0';
 
   // Use strchr/strstr to find the first backslash in the URL
   // (this is assuming there is no http:// or https:// in the URL).
   char *slash = strstr(port, "/");
+
   // Set the path pointer to 1 character after the spot returned by strchr.
   path = slash + 1;
+
   // Overwrite the backslash with a '\0'
   // so that we are no longer considering anything after the backslash.
   *slash = '\0';
@@ -139,6 +143,23 @@ int main(int argc, char *argv[])
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
+
+  // Parse the input URL
+  urlinfo_t *urlinfo = parse_url(argv[1]);
+
+  // Initialize a socket by calling the 'get_socket' function from lib.c
+  sockfd = get_socket(urlinfo->hostname, urlinfo->port);
+
+  // Call 'recv' in a loop untilk there is no more data to receive from the server
+  while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0)
+  {
+    // Print the received response to stdout
+    printf("\nServer Response: \n%s\n", buf);
+  }
+
+  // Clean up any allocated memory and open file descriptors
+  free(urlinfo);
+  close(sockfd);
 
   return 0;
 }
