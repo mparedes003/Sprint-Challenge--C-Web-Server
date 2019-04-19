@@ -115,7 +115,7 @@ int send_request(int fd, char *hostname, char *port, char *path)
 
   if (rv < 0)
   {
-    perror("An error occured sending request tio server");
+    perror("An error occured sending request to server");
   }
 
   return rv;
