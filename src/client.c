@@ -80,6 +80,7 @@ urlinfo_t *parse_url(char *url)
   urlinfo->port = port;
   urlinfo->path = path;
 
+  printf("urlinfo: %s\n", urlinfo->path);
   return urlinfo;
 }
 
@@ -105,7 +106,7 @@ int send_request(int fd, char *hostname, char *port, char *path)
 
   // Request length
   int request_length = sprintf(
-      request, "GET /%s HTTP/1.1\nHost: %s:%s\nConnection:close\n\n",
+      request, "GET /%s HTTP/1.1\nHost: %s:%s\nConnection: close\n\n",
       path,
       hostname,
       port);
@@ -149,6 +150,9 @@ int main(int argc, char *argv[])
 
   // Initialize a socket by calling the 'get_socket' function from lib.c
   sockfd = get_socket(urlinfo->hostname, urlinfo->port);
+
+  // Call `send_request` to construct the request and send it
+  int rv = send_request(sockfd, urlinfo->hostname, urlinfo->port, urlinfo->path);
 
   // Call 'recv' in a loop untilk there is no more data to receive from the server
   while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0)
